@@ -1,0 +1,38 @@
+.root {
+  margin-top: 30px;
+  width: 300px;
+  height: 50px;
+  border: 10px solid #fe5f1e;
+  border-radius: 30px;
+  margin-left: 5px;
+  cursor: pointer;
+  background-color: #fe5f1e;
+  color: white;
+  text-shadow: 0 0 0 white;
+  font-size: large;
+  text-align: center;
+  // @media (max-width: 340px) {
+  //   width: 290px;
+  //   height: 45px;
+  // }
+
+  &::placeholder {
+    color: white;
+  }
+
+  &:focus {
+    &::placeholder {
+      visibility: hidden;
+    }
+  }
+}
+.clearIcon {
+  width: 30px;
+  height: 30px;
+  justify-content: center;
+  cursor: pointer;
+  top: 10px;
+  left: 5px;
+  position: relative;
+  opacity: 0.8;
+}

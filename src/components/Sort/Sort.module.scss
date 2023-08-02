@@ -1,0 +1,23 @@
+.root {
+    display: flex;
+    justify-content: center;
+  
+    button {
+      text-align: center;
+      width: 25px;
+      height: 30px;
+      border: 1px solid #fe5f1e;
+      border-radius: 15px;
+      margin-left: 5px;
+      cursor: pointer;
+      background-color: white;
+      color: #fe5f1e;
+      transition: transform 0.2s ease-in-out;
+      
+      &:hover {
+        background-color: #fe5f1e;
+        color: white;
+        transform: translateY(-3px);
+      }
+    }
+  }
