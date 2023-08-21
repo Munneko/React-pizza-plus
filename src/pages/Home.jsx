@@ -10,6 +10,8 @@ import Skeleton from '../components/PizzaBlock/Skeleton';
 import Pagination from '../components/Pagination';
 import { setCategoryId, setPageCount, setFilters } from '../redux/slices/filterSlice';
 import { setItems, fetchPizzas } from '../redux/slices/pizzaSlices';
+import Error from '../components/Error';
+
 
 const Home = ({ searchValue }) => {
   const navigate = useNavigate();
@@ -17,7 +19,7 @@ const Home = ({ searchValue }) => {
   const isSearch = React.useRef(false);
   const isMounted = React.useRef(false);
   const { categoryId, pageCount } = useSelector((state) => state.filter);
-  const items = useSelector((state) => state.pizza.items);
+  const { items, status } = useSelector((state) => state.pizza);
   const sortProperty = useSelector((state) => state.filter.sort.sortProperty);
   const sortType = useSelector((state) => state.filter.sort);
   // const [items, setItems] = React.useState([]);
@@ -35,13 +37,12 @@ const Home = ({ searchValue }) => {
     const category = categoryId > 0 ? `category=${categoryId}` : '';
     const search = searchValue ? `&search=${searchValue}` : '';
 
-    try {
-      dispatch(fetchPizzas({ category, search, pageCount, sortType, order }));
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
+    dispatch(fetchPizzas({ category, search, pageCount, sortType, order }));
+    // } catch (error) {
+    //   console.log(error);
+    //  } //finally {
+    // //   setLoading(false);
+    // // }
     window.scrollTo(0, 0);
   };
 
@@ -87,7 +88,13 @@ const Home = ({ searchValue }) => {
         <Sort onClickOrder={(orderType) => setOrder(orderType)} />
       </div>
       <h2 className="content__title">Все пиццы</h2>
-      <div className="content__items">{loading ? skeletons : pizzas}</div>
+      {status === 'error' ? (
+        <div>
+          <Error />
+        </div>
+      ) : (
+        <div className="content__items">{status === 'loading' ? skeletons : pizzas}</div>
+      )}
       <Pagination value={pageCount} onChangePage={onChangePage} />
     </div>
   );
