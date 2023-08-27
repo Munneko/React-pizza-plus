@@ -1,31 +1,32 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import qs from 'qs';
 import Sort, { list } from '../components/Sort';
 import Categories from '../components/Categories';
 import PizzaBlock from '../components/PizzaBlock';
 import Skeleton from '../components/PizzaBlock/Skeleton';
 import Pagination from '../components/Pagination';
-import { setCategoryId, setPageCount, setFilters } from '../redux/slices/filterSlice';
-import { setItems, fetchPizzas } from '../redux/slices/pizzaSlices';
+import {
+  setCategoryId,
+  setPageCount,
+  setFilters,
+  selectSort,
+  selectFilter,
+} from '../redux/slices/filterSlice';
+import { fetchPizzas, selectPizzaData } from '../redux/slices/pizzaSlices';
 import Error from '../components/Error';
 
-
-const Home = ({ searchValue }) => {
+const Home = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isSearch = React.useRef(false);
   const isMounted = React.useRef(false);
-  const { categoryId, pageCount } = useSelector((state) => state.filter);
-  const { items, status } = useSelector((state) => state.pizza);
+  const { categoryId, pageCount, searchValue } = useSelector(selectFilter);
+  const { items, status } = useSelector(selectPizzaData);
   const sortProperty = useSelector((state) => state.filter.sort.sortProperty);
-  const sortType = useSelector((state) => state.filter.sort);
-  // const [items, setItems] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
+  const sortType = useSelector(selectSort);
   const [order, setOrder] = React.useState('asc');
-
   const onClickCategory = (id) => {
     dispatch(setCategoryId(id));
   };
@@ -33,16 +34,10 @@ const Home = ({ searchValue }) => {
     dispatch(setPageCount(number));
   };
   const getPizzas = async () => {
-    setLoading(true);
     const category = categoryId > 0 ? `category=${categoryId}` : '';
     const search = searchValue ? `&search=${searchValue}` : '';
 
     dispatch(fetchPizzas({ category, search, pageCount, sortType, order }));
-    // } catch (error) {
-    //   console.log(error);
-    //  } //finally {
-    // //   setLoading(false);
-    // // }
     window.scrollTo(0, 0);
   };
 
@@ -65,7 +60,7 @@ const Home = ({ searchValue }) => {
       getPizzas();
     }
     isSearch.current = false;
-  }, [categoryId, sortType, order, searchValue, pageCount]);
+  }, [categoryId, sortType, order, pageCount, searchValue]);
 
   React.useEffect(() => {
     if (isMounted.current) {
@@ -82,6 +77,7 @@ const Home = ({ searchValue }) => {
   const pizzas = items.map((obj) => <PizzaBlock key={obj.id} {...obj} />);
   const skeletons = [...Array(8)].map((_, index) => <Skeleton key={index} />);
   return (
+    
     <div className="container">
       <div className="content__top">
         <Categories value={categoryId} onClickCategory={onClickCategory} />
@@ -90,6 +86,7 @@ const Home = ({ searchValue }) => {
       <h2 className="content__title">Все пиццы</h2>
       {status === 'error' ? (
         <div>
+          
           <Error />
         </div>
       ) : (
