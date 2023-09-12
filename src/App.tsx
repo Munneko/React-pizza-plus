@@ -7,11 +7,10 @@ import NotFound from './pages/NotFound';
 import Cart from './pages/Cart';
 import { Routes, Route } from 'react-router-dom';
 
-
 function App() {
   return (
-    <div className='App'>
-    <div className="wrapper">
+    <div className="App">
+      <div className="wrapper">
         <Header />
         <div className="content">
           <Routes>
@@ -20,7 +19,7 @@ function App() {
             <Route path="*" element={<NotFound />}></Route>
           </Routes>
         </div>
-    </div>
+      </div>
     </div>
   );
 }

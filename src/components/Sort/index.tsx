@@ -3,26 +3,35 @@ import style from './Sort.module.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectSort, setSort } from '../../redux/slices/filterSlice';
 
-export const list = [
+type SortList = {
+  name: string;
+  sortProperty: string;
+};
+type SortProps = {
+  onClickOrder: (orderType: string) => void;
+}
+// type PopupClick =  React.MouseEvent<HTMLBodyElement> 
+
+export const list: SortList[] = [
   { name: 'популярности', sortProperty: 'rating' },
   { name: 'цене', sortProperty: 'price' },
   { name: 'алфавиту', sortProperty: 'title' },
 ];
 
-function Sort({ onClickOrder }) {
+const Sort: React.FC<SortProps> =({ onClickOrder }) => {
   const dispatch = useDispatch();
   const sort = useSelector(selectSort);
-  const sortRef = React.useRef();
+  const sortRef = React.useRef(null);
   const [open, setOpen] = React.useState(false);
 
-  const onClickName = (obj) => {
+  const onClickName = (obj: SortList) => {
     dispatch(setSort(obj));
     setOpen(false);
   };
 
   React.useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (!event.composedPath().includes(sortRef.current)) {
+    const handleClickOutside = (event: MouseEvent ) => {
+      if (sortRef.current && !event.composedPath().includes(sortRef.current)) {
         setOpen(false);
       }
     };
