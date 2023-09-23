@@ -10,7 +10,6 @@ type SortList = {
 type SortProps = {
   onClickOrder: (orderType: string) => void;
 }
-// type PopupClick =  React.MouseEvent<HTMLBodyElement> 
 
 export const list: SortList[] = [
   { name: 'популярности', sortProperty: 'rating' },
