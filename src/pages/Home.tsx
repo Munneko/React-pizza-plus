@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import qs from 'qs';
 import Sort, { list } from '../components/Sort';
@@ -13,13 +13,16 @@ import {
   setFilters,
   selectSort,
   selectFilter,
+  SortItem,
+  initialState,
 } from '../redux/slices/filterSlice';
 import { fetchPizzas, selectPizzaData } from '../redux/slices/pizzaSlices';
 import Error from '../components/Error/';
+import { useAppDispatch } from '../redux/store';
 
 const Home = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const isSearch = React.useRef(false);
   const isMounted = React.useRef(false);
   const { categoryId, pageCount, searchValue } = useSelector(selectFilter);
@@ -31,13 +34,12 @@ const Home = () => {
   const onClickCategory = (id: number) => {
     dispatch(setCategoryId(id));
   };
-  const onChangePage = (number:number) => {
+  const onChangePage = (number: number) => {
     dispatch(setPageCount(number));
   };
   const getPizzas = async () => {
     const category = categoryId > 0 ? `category=${categoryId}` : '';
     const search = searchValue ? `&search=${searchValue}` : '';
-// @ts-ignore
     dispatch(fetchPizzas({ category, search, pageCount, sortType, order }));
     window.scrollTo(0, 0);
   };
@@ -45,9 +47,10 @@ const Home = () => {
   React.useEffect(() => {
     if (window.location.search) {
       const params = qs.parse(window.location.search.substring(1));
-      const sort = list.find((obj) => obj.sortProperty === params.sortProperty);
+      const sort = list.find((obj) => obj.sortProperty === params.sortProperty) as SortItem;
       dispatch(
         setFilters({
+          ...initialState,
           ...params,
           sort,
         }),
@@ -75,10 +78,9 @@ const Home = () => {
     isMounted.current = true;
   }, [categoryId, sortType, order, pageCount, sortProperty, navigate]);
 
-  const pizzas = items.map((obj:any) => <PizzaBlock key={obj.id} {...obj} />);
+  const pizzas = items.map((obj: any) => <PizzaBlock key={obj.id} {...obj} />);
   const skeletons = [...Array(8)].map((_, index) => <Skeleton key={index} />);
   return (
-    
     <div className="container">
       <div className="content__top">
         <Categories value={categoryId} onClickCategory={onClickCategory} />
@@ -87,13 +89,12 @@ const Home = () => {
       <h2 className="content__title">Все пиццы</h2>
       {status === 'error' ? (
         <div>
-          
           <Error />
         </div>
       ) : (
         <div className="content__items">{status === 'loading' ? skeletons : pizzas}</div>
       )}
-      <Pagination  onChangePage={onChangePage} pageCount={3}  />
+      <Pagination onChangePage={onChangePage} pageCount={3} />
     </div>
   );
 };

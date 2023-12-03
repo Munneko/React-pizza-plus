@@ -1,7 +1,8 @@
 import React from 'react';
 import style from './Sort.module.scss';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector} from 'react-redux';
 import { selectSort, setSort } from '../../redux/slices/filterSlice';
+import { useAppDispatch } from '../../redux/store';
 
 type SortList = {
   name: string;
@@ -19,7 +20,7 @@ export const list: SortList[] = [
 ];
 
 const Sort: React.FC<SortProps> =({ onClickOrder }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const sort = useSelector(selectSort);
   const sortRef = React.useRef(null);
   const [open, setOpen] = React.useState(false);
